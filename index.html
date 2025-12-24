@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TeaTrace 茶迹</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              tea: {
+                50: '#F5F7F5',
+                100: '#E6EBE6',
+                200: '#D1DAD1',
+                300: '#B0BDB0', // Sage
+                400: '#8F9E8F',
+                500: '#6B7D6B', // Muted Green
+                600: '#4A5C4A',
+                700: '#384538',
+                800: '#2A332A',
+                900: '#1F261F',
+              },
+              stone: {
+                50: '#FAFAF9',
+                100: '#F5F5F4',
+                200: '#E7E5E4',
+                300: '#D6D3D1',
+                400: '#A8A29E',
+                500: '#78716C',
+                800: '#292524',
+                900: '#1C1917',
+              },
+              paper: '#F2F0EB', // Rice paper warm tone
+            },
+            fontFamily: {
+              serif: ['"Noto Serif SC"', 'serif'],
+              sans: ['"Noto Sans SC"', 'sans-serif'],
+            },
+            backgroundImage: {
+              'texture': "url('https://www.transparenttextures.com/patterns/cream-paper.png')",
+            },
+            animation: {
+              'float': 'float 10s ease-in-out infinite',
+              'float-delayed': 'float 12s ease-in-out infinite reverse',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0) scale(1)' },
+                '50%': { transform: 'translateY(-20px) scale(1.05)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html, body, #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #E7E5E4; /* stone-200 outside the phone */
+        font-family: 'Noto Sans SC', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior-y: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      /* Mobile override to remove centering quirks on actual devices */
+      @media (max-width: 768px) {
+        body {
+          display: block;
+          background-color: #F2F0EB;
+        }
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px 0 rgba(100, 100, 100, 0.05);
+      }
+      /* Hide scrollbar for clean look */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      input[type=range] {
+        -webkit-appearance: none; 
+        background: transparent; 
+      }
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "date-fns/": "https://esm.sh/date-fns@^4.1.0/",
+    "date-fns": "https://esm.sh/date-fns@^4.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.26",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
