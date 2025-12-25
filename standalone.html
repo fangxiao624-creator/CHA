@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>TeaTrace 茶迹</title>
     
-    <!-- Tailwind CSS -->
+    <!-- 1. 样式框架 Tailwind CSS (通常国内可用) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Babel for transpiling TSX in browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- 2. Babel 用于在浏览器编译 React 代码 (替换为国内 Staticfile CDN 加速) -->
+    <script src="https://cdn.staticfile.org/babel-standalone/7.23.5/babel.min.js"></script>
 
-    <!-- Tailwind Config -->
+    <!-- 3. Tailwind 配置 (已移除 Google Fonts 引用，使用系统字体) -->
     <script>
       tailwind.config = {
         theme: {
@@ -34,8 +29,9 @@
               paper: '#F2F0EB',
             },
             fontFamily: {
-              serif: ['"Noto Serif SC"', 'serif'],
-              sans: ['"Noto Sans SC"', 'sans-serif'],
+              // 使用系统自带的高质量中文字体，无需下载，国内加载极快
+              serif: ['"Noto Serif SC"', '"Songti SC"', '"STSong"', '"SimSun"', 'serif'],
+              sans: ['"Noto Sans SC"', '"PingFang SC"', '"Microsoft YaHei"', '"Heiti SC"', 'sans-serif'],
             },
             backgroundImage: {
               'texture': "url('https://www.transparenttextures.com/patterns/cream-paper.png')",
@@ -55,11 +51,13 @@
       }
     </script>
     
+    <!-- 4. 自定义 CSS -->
     <style>
       html, body, #root { height: 100%; margin: 0; padding: 0; }
       body {
         background-color: #E7E5E4;
-        font-family: 'Noto Sans SC', sans-serif;
+        /* 针对 iOS 和 安卓 的字体优化 */
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
         -webkit-font-smoothing: antialiased;
         overscroll-behavior-y: none;
         display: flex;
@@ -89,7 +87,7 @@
       input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; }
     </style>
 
-    <!-- Import Map for React and Libraries -->
+    <!-- 5. Import Map 用于模块加载 -->
     <script type="importmap">
     {
       "imports": {
@@ -107,6 +105,7 @@
 <body>
     <div id="root"></div>
 
+    <!-- 6. 应用主要逻辑代码 -->
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect } from 'react';
         import ReactDOM from 'react-dom/client';
@@ -116,9 +115,8 @@
         import { format, subDays } from 'date-fns';
         import { zhCN } from 'date-fns/locale';
 
-        // --- CONSTANTS & TYPES ---
+        // --- 常量数据 (CONSTANTS) ---
         
-        // Tea Library Data
         const TEA_LIBRARY = [
           {
             id: 'Green',
@@ -207,9 +205,9 @@
           }
         ];
 
-        // --- COMPONENTS ---
+        // --- 组件部分 (COMPONENTS) ---
 
-        // 1. TeaLibraryView (Redesigned Horizontal UI)
+        // 1. 茶经页面 (TeaLibraryView)
         const TeaLibraryView = () => {
           const [selectedTea, setSelectedTea] = useState(null);
 
@@ -367,7 +365,7 @@
           );
         };
 
-        // 2. LogForm
+        // 2. 记录表单 (LogForm)
         const LogForm = ({ onClose, onSave }) => {
           const [formData, setFormData] = useState({
             teaName: '',
@@ -508,7 +506,7 @@
           );
         };
 
-        // 3. StatsView
+        // 3. 数据分析 (StatsView)
         const StatsView = ({ logs }) => {
           const categoryData = TEA_LIBRARY.map(cat => {
             const count = logs.filter(l => l.category === cat.id).length;
@@ -628,3 +626,221 @@
                                     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                                     fontFamily: 'Noto Serif SC',
                                     fontSize: '12px'
+                                }} 
+                            />
+                            <Bar dataKey="count" fill="#8F9E8F" radius={[3, 3, 3, 3]} barSize={10} activeBar={{fill: '#4A5C4A'}} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        </div>
+                    </div>
+                </>
+              )}
+            </div>
+          );
+        };
+
+        // 4. 历史记录 (HistoryView)
+        const HistoryView = ({ logs, onAddClick }) => {
+          const sortedLogs = [...logs].sort((a, b) => b.date - a.date);
+
+          return (
+            <div className="pb-28 pt-6 px-4 min-h-screen relative">
+               <div className="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 className="text-2xl font-serif font-bold text-stone-800 tracking-widest">茶迹</h2>
+                        <p className="text-[10px] text-stone-500 font-serif tracking-widest mt-1">一期一会，难得一面</p>
+                    </div>
+                    <motion.button 
+                        whileTap={{ scale: 0.95 }}
+                        onClick={onAddClick}
+                        className="bg-tea-800 text-tea-50 px-4 py-2 rounded-xl text-xs font-serif tracking-wide shadow-lg shadow-tea-900/20 hover:bg-tea-900 transition-colors"
+                    >
+                        记一盏
+                    </motion.button>
+               </div>
+
+              <div className="relative border-l border-tea-200/50 ml-3 space-y-4 min-h-[50vh]">
+                {sortedLogs.length === 0 ? (
+                   <div className="flex flex-col items-center justify-center py-24 ml-[-0.75rem] opacity-70">
+                       <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-5 border border-white shadow-sm">
+                           <Feather size={24} className="text-tea-400 opacity-60" />
+                       </div>
+                       <h3 className="font-serif font-bold text-stone-600 tracking-[0.2em] mb-2 text-sm">暂无茶迹</h3>
+                       <p className="font-serif text-[10px] text-stone-400 tracking-widest">且试新茶，莫负好时光</p>
+                       <div className="mt-8 w-8 h-[1px] bg-tea-200/50"></div>
+                   </div>
+                ) : (
+                    sortedLogs.map((log, index) => {
+                        const categoryInfo = TEA_LIBRARY.find(c => c.id === log.category);
+                        const logDate = new Date(log.date);
+                        
+                        return (
+                            <motion.div 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                key={log.id} 
+                                className="relative pl-6"
+                            >
+                                <div className="absolute left-[-5px] top-6 w-2.5 h-2.5 rounded-full bg-tea-100 border-2 border-tea-400 z-10"></div>
+                                
+                                <div className="glass-card p-0 rounded-xl overflow-hidden group hover:bg-white/60 transition-colors duration-300">
+                                    <div className="flex">
+                                        <div className="w-12 bg-stone-100/50 flex flex-col items-center justify-center border-r border-white/50 py-3">
+                                            <span className="font-serif text-lg font-bold text-stone-800 leading-none">{format(logDate, 'dd')}</span>
+                                            <span className="text-[9px] text-stone-500 uppercase mt-0.5 tracking-wider">{format(logDate, 'MMM', { locale: zhCN })}</span>
+                                            <div className="w-0.5 h-3 bg-tea-200 my-1.5"></div>
+                                            <span className="text-[9px] text-stone-400 font-mono">{format(logDate, 'HH:mm')}</span>
+                                        </div>
+
+                                        <div className="flex-1 p-4">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h3 className="text-base font-serif font-bold text-stone-800 tracking-wide">{log.teaName}</h3>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full" style={{backgroundColor: categoryInfo?.color}}></span>
+                                                        <span className="text-[10px] text-stone-500 font-medium tracking-wide">
+                                                            {categoryInfo?.name}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-0.5">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <span key={star} className={`text-[10px] ${star <= log.rating ? 'text-yellow-600' : 'text-gray-200'}`}>★</span>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-3 gap-2 py-2 border-t border-stone-200/30 border-dashed">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[9px] text-stone-400 mb-0.5">水温</span>
+                                                    <div className="flex items-center gap-1 text-stone-700 font-medium">
+                                                        <Thermometer size={10} className="text-tea-400" />
+                                                        <span className="text-xs font-serif">{log.temp}°</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col border-l border-stone-200/30 pl-2">
+                                                    <span className="text-[9px] text-stone-400 mb-0.5">投茶</span>
+                                                    <div className="flex items-center gap-1 text-stone-700 font-medium">
+                                                        <Droplets size={10} className="text-blue-300" />
+                                                        <span className="text-xs font-serif">{log.amount}g</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col border-l border-stone-200/30 pl-2">
+                                                    <span className="text-[9px] text-stone-400 mb-0.5">次数</span>
+                                                    <div className="flex items-center gap-1 text-stone-700 font-medium">
+                                                        <Repeat size={10} className="text-orange-300" />
+                                                        <span className="text-xs font-serif">{log.brewCount}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {log.notes && (
+                                                <div className="mt-1.5 pt-1.5 text-xs text-stone-600 font-serif leading-relaxed opacity-80">
+                                                    {log.notes}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })
+                )}
+              </div>
+            </div>
+          );
+        };
+
+        // --- 主程序 (MAIN APP) ---
+        const App = () => {
+          const [activeTab, setActiveTab] = useState('log');
+          const [logs, setLogs] = useState([]);
+          const [showForm, setShowForm] = useState(false);
+          const [isLoading, setIsLoading] = useState(true);
+
+          useEffect(() => {
+            const savedLogs = localStorage.getItem('teatrace_logs');
+            if (savedLogs) {
+              setLogs(JSON.parse(savedLogs));
+            } else {
+              setLogs(INITIAL_LOGS);
+            }
+            setIsLoading(false);
+          }, []);
+
+          useEffect(() => {
+            if (!isLoading) {
+              localStorage.setItem('teatrace_logs', JSON.stringify(logs));
+            }
+          }, [logs, isLoading]);
+
+          const handleSaveLog = (newLog) => {
+            const log = {
+              ...newLog,
+              id: crypto.randomUUID()
+            };
+            setLogs([log, ...logs]);
+          };
+
+          return (
+            <div className="w-full h-full relative bg-texture bg-repeat overflow-hidden md:w-[390px] md:h-[844px] md:max-h-[95vh] md:rounded-[45px] md:shadow-2xl md:border-[6px] md:border-white/50">
+                <div className="absolute top-[-15%] left-[-10%] w-[70%] h-[40%] bg-tea-200/30 rounded-full blur-[100px] pointer-events-none z-0 animate-float"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[50%] bg-stone-300/20 rounded-full blur-[90px] pointer-events-none z-0 animate-float-delayed"></div>
+
+                <main className="flex-1 h-full overflow-y-auto no-scrollbar relative z-10 scroll-smooth">
+                    {activeTab === 'library' && <TeaLibraryView />}
+                    {activeTab === 'stats' && <StatsView logs={logs} />}
+                    {activeTab === 'log' && (
+                        <HistoryView 
+                            logs={logs} 
+                            onAddClick={() => setShowForm(true)} 
+                        />
+                    )}
+                </main>
+
+                <div className="absolute bottom-6 left-0 right-0 flex justify-center z-20 pointer-events-none">
+                    <div className="glass-panel px-6 py-3 rounded-full flex items-center gap-8 shadow-2xl shadow-stone-900/5 pointer-events-auto ring-1 ring-white/50 bg-white/80 backdrop-blur-xl">
+                        <button 
+                            onClick={() => setActiveTab('log')}
+                            className={`flex flex-col items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${activeTab === 'log' ? 'text-tea-800 scale-110' : 'text-stone-400 hover:text-stone-600'}`}
+                        >
+                            <Coffee strokeWidth={activeTab === 'log' ? 2.5 : 1.5} size={22} />
+                            <div className={`w-1 h-1 rounded-full bg-tea-800 mt-1 transition-opacity ${activeTab === 'log' ? 'opacity-100' : 'opacity-0'}`}></div>
+                        </button>
+                        <div className="w-px h-6 bg-stone-300/50"></div>
+                        <button 
+                            onClick={() => setActiveTab('library')}
+                            className={`flex flex-col items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${activeTab === 'library' ? 'text-tea-800 scale-110' : 'text-stone-400 hover:text-stone-600'}`}
+                        >
+                            <BookOpen strokeWidth={activeTab === 'library' ? 2.5 : 1.5} size={22} />
+                            <div className={`w-1 h-1 rounded-full bg-tea-800 mt-1 transition-opacity ${activeTab === 'library' ? 'opacity-100' : 'opacity-0'}`}></div>
+                        </button>
+                         <div className="w-px h-6 bg-stone-300/50"></div>
+                        <button 
+                            onClick={() => setActiveTab('stats')}
+                            className={`flex flex-col items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${activeTab === 'stats' ? 'text-tea-800 scale-110' : 'text-stone-400 hover:text-stone-600'}`}
+                        >
+                            <PieChart strokeWidth={activeTab === 'stats' ? 2.5 : 1.5} size={22} />
+                            <div className={`w-1 h-1 rounded-full bg-tea-800 mt-1 transition-opacity ${activeTab === 'stats' ? 'opacity-100' : 'opacity-0'}`}></div>
+                        </button>
+                    </div>
+                </div>
+
+                <AnimatePresence>
+                    {showForm && (
+                        <LogForm 
+                            onClose={() => setShowForm(false)} 
+                            onSave={handleSaveLog} 
+                        />
+                    )}
+                </AnimatePresence>
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
